@@ -23,20 +23,18 @@ public abstract class AbstractGraph implements Graph {
 
     public void loadEdgesFromFile(Scanner scan){
 
-        while(scan.hasNext()) {
+        for (int i =0; i< numV; i++) {
             String line = scan.nextLine();
+            for (int j=0; j< numV; j++) {
+                char stuff = line.charAt(j);
+                if (stuff == '1'){
 
-            //separate all values by comma
-            String[] lineVector = line.split(",");
-            int source = Integer.parseInt(lineVector[0]);
-            int dest = Integer.parseInt(lineVector[1]);
-            if(isDirected()) {
+                int source = i;
+                int dest = j;
+
                 Edge edge = new Edge(source, dest);
                 insert(edge);
-            }else{
-                int weight = Integer.parseInt(lineVector[2]);
-                Edge edge = new Edge(source, dest, weight);
-                insert(edge);
+            }
             }
 
         }
@@ -59,7 +57,7 @@ public abstract class AbstractGraph implements Graph {
         else{
             throw new IllegalArgumentException();
         }
-            returnValue.loadEdgesFromFile(scan);
-            return returnValue;
+        returnValue.loadEdgesFromFile(scan);
+        return returnValue;
     }
 }
