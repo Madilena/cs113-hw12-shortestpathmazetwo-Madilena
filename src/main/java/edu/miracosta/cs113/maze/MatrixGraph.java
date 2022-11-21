@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 /**
  * Implementation of a graph data structure with an underlying adjacency matrix
- * @author Jacob
+ * @author Madilena
  *
  */
 public class MatrixGraph extends AbstractGraph {
@@ -41,7 +41,7 @@ public class MatrixGraph extends AbstractGraph {
 
     /**
      * Internal iterator for nodes, using an underlying queue
-     * @author Jacob
+     * @author Madilena
      *
      */
     @SuppressWarnings({ "hiding", "rawtypes" })

@@ -1,8 +1,4 @@
-package edu.miracosta.cs113.maze;/**
- * Edge class for implementing graphs. Vertices are represented by the type int
- * @author Jacob / Koffman & Wolfgang
- *
- */
+package edu.miracosta.cs113.maze;
 public class Edge {
     //Data Fields
     /**
