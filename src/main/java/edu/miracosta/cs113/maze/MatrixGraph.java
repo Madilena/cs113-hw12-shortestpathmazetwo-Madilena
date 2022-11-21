@@ -39,11 +39,6 @@ public class MatrixGraph extends AbstractGraph {
         }
     }
 
-    /**
-     * Internal iterator for nodes, using an underlying queue
-     * @author Madilena
-     *
-     */
     @SuppressWarnings({ "hiding", "rawtypes" })
     private class Iter<Edge> implements Iterator {
         /**

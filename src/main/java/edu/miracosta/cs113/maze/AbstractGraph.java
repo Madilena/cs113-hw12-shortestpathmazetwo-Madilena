@@ -48,8 +48,6 @@ public abstract class AbstractGraph implements Graph {
 
     public static Graph createGraph(Scanner scan, boolean isDirected, String type) throws FileNotFoundException {
 
-        //int numV = scan.nextInt();
-
         String line = scan.nextLine();
         int numV = Integer.parseInt(line);
         AbstractGraph returnValue = null;
