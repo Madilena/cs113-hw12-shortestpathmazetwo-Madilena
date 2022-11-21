@@ -134,7 +134,7 @@ public class MatrixGraph extends AbstractGraph {
         {
             String input = scan.nextLine();
             Scanner sc = new Scanner(input);//scan a line as an edge
-            sc.useDelimiter(AbstractGraph.DELIM);//use only comma delimiter
+            sc.useDelimiter(",");//use only comma delimiter
             try
             { //in case we fail to parse anything, such as format didn't work
                 int source = sc.nextInt();//scan x position of point
