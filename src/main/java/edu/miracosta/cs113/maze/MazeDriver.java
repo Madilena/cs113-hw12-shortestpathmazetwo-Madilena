@@ -1,6 +1,5 @@
 package edu.miracosta.cs113.maze;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -11,7 +10,7 @@ public class MazeDriver {
         int numV = 0;
         edu.miracosta.cs113.maze.Graph theMaze = null;
         try{
-            Scanner scan = new Scanner(new File("/Users/madilenamendiola/IdeaProjects/cs113-hw12-shortestpathmazetwo-Madilena/src/main/java/edu/miracosta/cs113/maze/maze.txt"));
+            Scanner scan = new Scanner(new File("src/main/java/edu/miracosta/cs113/maze/maze.txt"));
             theMaze = AbstractGraph.createGraph(scan, false, "Matrix");
             numV = theMaze.getNumV();
         }

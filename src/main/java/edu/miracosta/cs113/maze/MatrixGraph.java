@@ -129,12 +129,12 @@ public class MatrixGraph extends AbstractGraph {
         {
             String input = scan.nextLine();
             Scanner sc = new Scanner(input);//scan a line as an edge
-            sc.useDelimiter(",");//use only comma delimiter
+            sc.useDelimiter("");//use only comma delimiter
             try
             { //in case we fail to parse anything, such as format didn't work
                 int source = sc.nextInt();//scan x position of point
                 int dest = sc.nextInt();//scan y position of point
-                if(sc.hasNextDouble()){
+                if(sc.hasNextInt()){
                     edges[source][dest] = sc.nextDouble();
                 } else {
                     edges[source][dest] = Edge.UNWEIGHTED_EDGE;

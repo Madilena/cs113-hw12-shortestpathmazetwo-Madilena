@@ -27,23 +27,6 @@ public abstract class AbstractGraph implements Graph {
 
     public void loadEdgesFromFile(Scanner scan){
 
-        for (int i =0; i< numV; i++) {
-            String line = scan.nextLine();
-            for (int j=0; j< numV; j++) {
-                char stuff = line.charAt(j);
-                if (stuff == '1'){
-
-                int source = i;
-                int dest = j;
-
-                Edge edge = new Edge(source, dest);
-                insert(edge);
-            }
-            }
-
-        }
-        System.out.println("Closing Scanner...");
-        scan.close();
     }
 
     public static Graph createGraph(Scanner scan, boolean isDirected, String type) throws FileNotFoundException {
