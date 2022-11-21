@@ -6,6 +6,15 @@ public class DepthFirstSearch{
     private Graph graph;
     private int[] parent;
     private boolean[] visited;
+
+    public int[] getDiscoveryOrder() {
+        return discoveryOrder;
+    }
+
+    public int[] getFinishOrder() {
+        return finishOrder;
+    }
+
     private int[] discoveryOrder;
     private int[] finishOrder;
     private int discoverIndex = 0;
