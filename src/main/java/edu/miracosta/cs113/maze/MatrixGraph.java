@@ -1,6 +1,8 @@
 package edu.miracosta.cs113.maze;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Stack;
 
 public class MatrixGraph extends AbstractGraph {
     private int numV;
@@ -82,6 +84,21 @@ public class MatrixGraph extends AbstractGraph {
 
     @Override
     public Iterator<Edge> edgeIterator(int source) {
-        return null;
+        //Create stack for storing incident edges
+        Stack<Edge> incident_edges = new Stack<Edge>();
+
+        //Search the row of the adjacency matrix corresponding to node u
+        for (int i=0; i<numV; i++){
+
+            //If an edge exists push it to the stack
+                incident_edges.push(getEdge(source,i));
+        }
+
+        //Return null if no edges were found
+        if (incident_edges.isEmpty())
+            return null;
+
+        //Otherwise return an iterator with all the edges from the stack
+        return incident_edges.iterator();
     }
 }

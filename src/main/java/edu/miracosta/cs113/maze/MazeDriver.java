@@ -7,27 +7,32 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class MazeDriver {
-    public static void main(String[] args){
-        Graph g = null;
-        int n = 0;
+    public static <Graph> void main(String[] args){
+        int numV = 0;
         edu.miracosta.cs113.maze.Graph theMaze = null;
         try{
             Scanner scan = new Scanner(new File("/Users/madilenamendiola/IdeaProjects/cs113-hw12-shortestpathmazetwo-Madilena/src/main/java/edu/miracosta/cs113/maze/maze.txt"));
-            g = AbstractGraph.createGraph(scan, true, "Matrix");
-            n = g.getNumV();
+            theMaze = AbstractGraph.createGraph(scan, false, "Matrix");
+            numV = theMaze.getNumV();
         }
 
         catch (IOException ex){
-            ex.printStackTrace();
+            System.err.println("IO Error while reading graph.");
+            System.err.println(ex.toString());
             System.exit(1);
         }
 
-        DepthFirstSearch dfs = new DepthFirstSearch(g);
-        int[] dOrder = dfs.getDiscoveryOrder();
-        int[] fOrder = dfs.getFinishOrder();
-        System.out.println("Discovery and finish order");
-        for (int i = 0; i < n; i++){
-            System.out.println(dOrder[i] + " " + fOrder[i]);
+        int parent[]= BreadthFirstSearch.breadthFirstSearch(theMaze, 0);
+        Stack thePath = new Stack();
+        int v = numV - 1;
+        while (parent[v] != -1){
+            thePath.push(v);
+            v = parent[v];
+        }
+
+        System.out.println("***THE SHORTEST PATH IS:");
+        while(!thePath.empty()){
+            System.out.println(thePath.pop());
         }
     }
 }
