@@ -1,104 +1,156 @@
 package edu.miracosta.cs113.maze;
+import java.util.*;
+import java.util.function.Consumer;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Stack;
-
+/**
+ * Implementation of a graph data structure with an underlying adjacency matrix
+ * @author Jacob
+ *
+ */
 public class MatrixGraph extends AbstractGraph {
-    private int numV;
-    private boolean directed;
+    /**
+     * A matrix of edge weights
+     */
     private double[][] edges;
-    private boolean[][] isSetMatrix;
 
+    /**
+     * Construct a matrix graph with the given number of vertices
+     * @param numV Number of vertices in the graph
+     * @param directed Flag indicating whether the graph is directed or not
+     */
     public MatrixGraph(int numV, boolean directed) {
         super(numV, directed);
-
-        this.directed = directed;
-        this.numV = numV;
-
-        // Simply initializes our adjacency matrix to the appropriate size
         edges = new double[numV][numV];
-        isSetMatrix = new boolean[numV][numV];
-    }
-
-    public void insert(Edge edge ) {
-        int source = edge.getSource();
-        int destination  = edge.getDest();
-        int valueToAdd = 1;
-
-        edges[source][destination] = valueToAdd;
-        isSetMatrix[source][destination] = true;
-
-        if (!directed) {
-            edges[destination][source] = valueToAdd;
-            isSetMatrix[destination][source] = true;
-        }
-    }
-
-
-    public void addEdge(int source, int destination, float weight) {
-
-        float valueToAdd = weight;
-
-        edges[source][destination] = valueToAdd;
-        isSetMatrix[source][destination] = true;
-
-        if (!directed) {
-            edges[destination][source] = valueToAdd;
-            isSetMatrix[destination][source] = true;
-        }
-    }
-    public void printMatrix() {
-        for (int i = 0; i < numV; i++) {
-            for (int j = 0; j < numV; j++) {
-                // We only want to print the values of those positions that have been marked as set
-                if (isSetMatrix[i][j])
-                    System.out.format("%8s", String.valueOf(edges[i][j]));
-                else System.out.format("%8s", "/  ");
+        for(int i=0; i<numV; i++){
+            for(int j=0; j<numV; j++){
+                edges[i][j] = Double.POSITIVE_INFINITY; //fill the matrix with positive infinity values
             }
-            System.out.println();
         }
     }
-    public void printEdges() {
-        for (int i = 0; i < numV; i++) {
-            System.out.print("Node " + i + " is connected to: ");
-            for (int j = 0; j < numV; j++) {
-                if (isSetMatrix[i][j]) {
-                    System.out.print(j + " ");
+
+    public boolean isEdge(int source, int dest){
+        return edges[source][dest] != Double.POSITIVE_INFINITY;
+    }
+
+    public void insert(Edge edge){
+        edges[edge.getSource()][edge.getDest()] = edge.getWeight();
+        if(!isDirected()){
+            edges[edge.getDest()][edge.getSource()] = edge.getWeight();
+        }
+    }
+
+    /**
+     * Internal iterator for nodes, using an underlying queue
+     * @author Jacob
+     *
+     */
+    @SuppressWarnings({ "hiding", "rawtypes" })
+    private class Iter<Edge> implements Iterator {
+        /**
+         * A list of nodes adjacent to the node of the iterator
+         */
+        private Queue<Edge> adjacentEdges;
+
+        /**
+         * Constructs an iterator for the given set of edges
+         * @param adjacentEdges A queue of the edges adjacent to the source node
+         */
+        public Iter(Queue<Edge> adjacentEdges){
+            this.adjacentEdges = adjacentEdges;
+        }
+
+        @SuppressWarnings("unchecked")
+        public void forEachRemaining(Consumer arg0) {
+            ((Iterator) adjacentEdges).forEachRemaining(arg0);
+        }
+
+        /**
+         * Returns whether there are any unexplored edges adjacent to the node we are iterating on
+         * @return true if there are more nodes to explore, false otherwise
+         */
+        public boolean hasNext() {
+            return adjacentEdges.peek() != null;
+        }
+
+        /**
+         * Returns the next unexplored edge adjacent to the node we are iterating on
+         * @return the next unexplored edge adjacent to the node we are iterating on
+         */
+        public Object next() {
+            return adjacentEdges.poll();
+        }
+
+        /**
+         * Remove the next edge adjacent to the node we are iterating on from the queue
+         */
+        public void remove() {
+            adjacentEdges.poll();
+        }
+
+        public String toString(){
+            return adjacentEdges.toString();
+        }
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public Iterator<Edge> edgeIterator(int source){
+        Queue<Edge> adjacentEdges = new ArrayDeque<Edge>();
+        int end = edges.length;
+        for(int i = 0; i < end; i++){
+            double weight = edges[source][i];
+            if(weight != Double.POSITIVE_INFINITY){
+                adjacentEdges.offer(new Edge(source, i, weight));
+            }
+        }
+        return new Iter<Edge>(adjacentEdges);
+    }
+
+    public Edge getEdge(int source, int dest){
+        //The weight of the edge will be the proper weight if there is an edge
+        //or Double.Positive_Infinity if not
+        return new Edge(source, dest, edges[source][dest]);
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        int end = edges.length;
+        for(int i=0; i<end; i++){
+            sb.append("Node " + i + "-->\n");
+            for(int j=0; j<end; j++){
+                if(edges[i][j] == Double.POSITIVE_INFINITY){
+                    sb.append("\tnode: " + j + " is not adjacent to " + i + "\n");
+                } else {
+                    sb.append("\tnode: " + j + ", weight: " + edges[i][j] + "\n");
                 }
             }
-            System.out.println();
         }
-    }
-    public boolean isEdge(int source, int destination) {
-        return isSetMatrix[source][destination];
-    }
-
-    public Edge getEdge(int source, int destination) {
-        if ( !isSetMatrix[source][destination])
-            return null;
-        double weight = edges[source][destination];
-        Edge edge = new Edge(source, destination, weight);
-        return edge;
+        return sb.toString();
     }
 
     @Override
-    public Iterator<Edge> edgeIterator(int source) {
-        //Create stack for storing incident edges
-        Stack<Edge> incident_edges = new Stack<Edge>();
-
-        //Search the row of the adjacency matrix corresponding to node u
-        for (int i=0; i<numV; i++){
-
-            //If an edge exists push it to the stack
-                incident_edges.push(getEdge(source,i));
+    public void loadEdgesFromFile(Scanner scan){
+        //System.out.println(edges.length);
+        while(scan.hasNextLine())//while there are still more edges
+        {
+            String input = scan.nextLine();
+            Scanner sc = new Scanner(input);//scan a line as an edge
+            sc.useDelimiter(AbstractGraph.DELIM);//use only comma delimiter
+            try
+            { //in case we fail to parse anything, such as format didn't work
+                int source = sc.nextInt();//scan x position of point
+                int dest = sc.nextInt();//scan y position of point
+                if(sc.hasNextDouble()){
+                    edges[source][dest] = sc.nextDouble();
+                } else {
+                    edges[source][dest] = Edge.UNWEIGHTED_EDGE;
+                }
+            }
+            catch(Exception e)
+            {
+                System.out.println("Failed to parse Edge: "+input);
+            }
+            sc.close();//close scanner
         }
-
-        //Return null if no edges were found
-        if (incident_edges.isEmpty())
-            return null;
-
-        //Otherwise return an iterator with all the edges from the stack
-        return incident_edges.iterator();
+        scan.close();
     }
 }
